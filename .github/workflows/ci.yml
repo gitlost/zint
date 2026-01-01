@@ -294,6 +294,13 @@ jobs:
         run: |
           set -e
           git config --global --add safe.directory ${GITHUB_WORKSPACE}
+          git clone https://github.com/gs1/gs1-syntax-engine
+          cd gs1-syntax-engine/src/c-lib
+          gmake lib
+          su
+          gmake install
+          exit
+          cd ../../..
           cmake -E make_directory build
           cmake -B build -DCMAKE_BUILD_TYPE=Release -DZINT_TEST=ON
           cmake --build build --config Release
