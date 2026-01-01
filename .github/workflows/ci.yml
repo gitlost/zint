@@ -19,7 +19,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with: 'zint/zint'
+      with:
+        repository: 'zint/zint'
 
     - name: Build FreeBSD
       id: build-freebsd
