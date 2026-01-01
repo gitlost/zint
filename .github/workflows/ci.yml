@@ -115,7 +115,7 @@ jobs:
       shell: bash
       run: |
         git clone --depth=1 https://github.com/madler/zlib.git zlib && cd zlib
-        cmake -B build -A Win32 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DZLIB_BUILD_TESTING=OFF -DZLIB_BUILD_SHARED=OFF -DZLIB_BUILD_MINIZIP=OFF -DZLIB_INSTALL_COMPAT_DLL=OFF
+        cmake -B build -A Win32 -DZLIB_BUILD_TESTING=OFF -DZLIB_BUILD_SHARED=OFF -DZLIB_BUILD_MINIZIP=OFF -DZLIB_INSTALL_COMPAT_DLL=OFF
         cmake --build build --config $BUILD_TYPE
         cmake -E rename build/$BUILD_TYPE/zs.lib zlib.lib
         cmake -E rename build/zconf.h zconf.h
@@ -293,7 +293,6 @@ jobs:
         prepare: pkg install -y git cmake gmake gcc graphics/png qt5-core qt5-uitools qt5-buildtools qt5-qmake qt5-svg qt5-testlib
         run: |
           set -e
-          git config --global --add safe.directory ${GITHUB_WORKSPACE}
           git clone https://github.com/gs1/gs1-syntax-engine
           cd gs1-syntax-engine/src/c-lib
           gmake lib
@@ -301,6 +300,7 @@ jobs:
           gmake install
           exit
           cd ../../..
+          git config --global --add safe.directory ${GITHUB_WORKSPACE}
           cmake -E make_directory build
           cmake -B build -DCMAKE_BUILD_TYPE=Release -DZINT_TEST=ON
           cmake --build build --config Release
