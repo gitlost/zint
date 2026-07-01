@@ -101,6 +101,47 @@ jobs:
       shell: bash
       run: LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$(pwd)/backend" PATH=$PATH:"$(pwd)/frontend" QT_QPA_PLATFORM=offscreen ctest -V -C $BUILD_TYPE
 
+  build-ubuntu-arm:
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Install libpng-dev
+      run: sudo apt-get install libpng-dev
+
+    - name: Install GS1 Syntax Engine
+      run: git clone --depth=1 https://github.com/gs1/gs1-syntax-engine && cd gs1-syntax-engine/src/c-lib && make lib && sudo make install
+
+    - name: Install locale
+      shell: bash
+      run: sudo locale-gen de_DE.UTF-8 && sudo update-locale
+
+    - name: Install Qt5
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: 5.15.2
+        dir: .
+
+    - name: Create Build Environment
+      shell: bash
+      run: git config --global --add safe.directory ${GITHUB_WORKSPACE} && cmake -E make_directory build
+
+    - name: Configure CMake
+      working-directory: build
+      shell: bash
+      run: CMAKE_PREFIX_PATH=$QT_ROOT_DIR cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DZINT_TEST=ON -DZINT_STATIC=ON
+
+    - name: Build
+      working-directory: build
+      shell: bash
+      run: cmake --build . -j8 --config $BUILD_TYPE
+
+    - name: Test
+      working-directory: build
+      shell: bash
+      run: LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$(pwd)/backend" PATH=$PATH:"$(pwd)/frontend" QT_QPA_PLATFORM=offscreen ctest -V -C $BUILD_TYPE
+
   build-windows-32bit:
     runs-on: windows-latest
 
