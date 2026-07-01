@@ -101,7 +101,7 @@ jobs:
       shell: bash
       run: LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$(pwd)/backend" PATH=$PATH:"$(pwd)/frontend" QT_QPA_PLATFORM=offscreen ctest -V -C $BUILD_TYPE
 
-  build-ubuntu-arm:
+  build-ubuntu-arm64:
     runs-on: ubuntu-24.04-arm
 
     steps:
@@ -117,10 +117,10 @@ jobs:
       shell: bash
       run: sudo locale-gen de_DE.UTF-8 && sudo update-locale
 
-    - name: Install Qt5
+    - name: Install Qt6
       uses: jurplel/install-qt-action@v4
       with:
-        version: 5.15.2
+        version: 6.11.*
         dir: .
 
     - name: Create Build Environment
